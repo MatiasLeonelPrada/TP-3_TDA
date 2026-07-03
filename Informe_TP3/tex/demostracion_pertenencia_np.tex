@@ -1,0 +1,56 @@
+\section{Demostración de Pertenencia a NP}
+
+Para demostrar que la versión de decisión del \textit{Hitting-Set Problem} pertenece a la clase NP, debemos probar que dada una solución candidata (un certificado), es posible verificar su validez en un tiempo acotado por un polinomio.
+
+A continuación, se presenta el algoritmo certificador escrito en Python que valida una solución propuesta:
+
+\begin{lstlisting}[language=Python, frame=single, numbers=left, breaklines=true, basicstyle=\ttfamily\footnotesize]
+def verificador_hitting_set(k, solucion, subsets, universo):
+    """
+    Verifica en tiempo polinomial si una solución candidata 
+    es válida para el Hitting Set Problem (versión decisión).
+    """
+    
+    # 1. Verificar restricción de cardinalidad
+    if len(solucion) > k:
+        return False
+        
+    # 2. Verificar que los elementos pertenezcan al universo
+    for elemento in solucion:
+        if elemento not in universo:
+            return False
+            
+    # 3. Verificar condición de intersección (Hitting Set)
+    for subconjunto in subsets:
+        interseccion_encontrada = False
+        
+        for elemento in solucion:
+            if elemento in subconjunto:
+                interseccion_encontrada = True
+                break # Globo pinchado, pasamos al siguiente
+                
+        if not interseccion_encontrada:
+            return False
+            
+    return True
+\end{lstlisting}
+
+\subsection*{Análisis de Complejidad}
+
+Para justificar que el validador opera en tiempo polinomial, definimos las variables que representan el tamaño de nuestra entrada:
+\begin{itemize}
+    \item $n$: Cantidad de elementos en el \texttt{universo} ($|A|$).
+    \item $m$: Cantidad de subconjuntos en \texttt{subsets}.
+    \item $c$: Cantidad de elementos en la \texttt{solucion} candidata ($|C|$). Por definición lógica del problema, $c \leq n$.
+\end{itemize}
+
+Evaluamos el costo temporal de cada paso del algoritmo en el peor de los casos:
+\begin{enumerate}
+    \item \textbf{Verificación de cardinalidad (Línea 8):} Obtener la longitud de la solución candidata y compararla con $k$ toma un tiempo de $\mathcal{O}(1)$ (o a lo sumo $\mathcal{O}(c)$ dependiendo de la implementación subyacente de la estructura de datos).
+    \item \textbf{Pertenencia al universo (Líneas 12-14):} Se itera sobre los $c$ elementos de la solución, verificando para cada uno si pertenece al universo de tamaño $n$. El costo en el peor caso es $\mathcal{O}(c \cdot n)$.
+    \item \textbf{Condición de Hitting Set (Líneas 17-26):} Se itera sobre los $m$ subconjuntos. Para cada uno (que puede tener hasta $n$ elementos), se busca si contiene alguno de los $c$ elementos de la solución. Este proceso de búsquedas anidadas requiere a lo sumo $\mathcal{O}(m \cdot c \cdot n)$ operaciones.
+\end{enumerate}
+
+El tiempo total de ejecución en el peor de los casos está acotado asintóticamente por el paso más costoso: $\mathcal{O}(m \cdot c \cdot n)$. Dado que la cantidad de elementos en la solución nunca será mayor al universo total ($c \leq n$), podemos simplificar la cota superior a $\mathcal{O}(m \cdot n^2)$.
+
+Como la función $\mathcal{O}(m \cdot n^2)$ es un polinomio respecto al tamaño de la entrada, queda formalmente demostrado que la verificación de un certificado se puede realizar en tiempo polinomial. En conclusión, \textbf{el Hitting-Set Problem se encuentra en la clase NP}.

@@ -1,0 +1,58 @@
+\section{Resolución mediante programación lineal entera}
+
+Como alternativa a la búsqueda exhaustiva mediante \textit{backtracking}, el problema de selección de jugadores para contentar a la prensa (Hitting-Set) puede modelarse matemáticamente y resolverse utilizando técnicas de programación lineal entera (ILP). Esta formulación permite aprovechar algoritmos avanzados de optimización matemática, como \textit{simplex} y \textit{branch-and-bound}, que resultan mucho más eficientes en la práctica para evitar tiempos de ejecución inmanejables de las instancias de mayor tamaño.
+
+A partir de la formalización previa del escenario, donde contamos con un conjunto universal $A$ de $n$ jugadores y $m$ subconjuntos $B_1, B_2, \dots, B_m$ correspondientes a las exigencias de cada medio, procedemos a definir el modelo de optimización:
+
+\subsection*{Variables de decisión}
+Para determinar qué jugadores conformarán la lista final, definimos una variable binaria $x_j$ para cada jugador $j \in A$. Esta variable actuará como un indicador lógico de la convocatoria del jugador:
+
+\begin{equation}
+    x_j = 
+    \begin{cases} 
+      1 & \text{si el jugador } j \text{ es convocado.} \\
+      0 & \text{en caso contrario.}
+   \end{cases}
+   \quad \forall j \in A
+\end{equation}
+
+\subsection*{Función objetivo}
+El objetivo del equipo técnico consiste en minimizar la cantidad total de cupos utilizados en el equipo. Matemáticamente, esto equivale a minimizar la suma de todas las variables de decisión (es decir, la cantidad de variables con valor 1):
+
+\begin{equation}
+    \min Z = \sum_{j \in A} x_j
+\end{equation}
+
+\subsection*{Restricciones}
+Para garantizar que se cumpla la condición de Hitting-Set, es obligatorio contentar a todos los medios periodísticos, seleccionando al menos un jugador de cada subconjunto. Esto se traduce en que, para cada medio $i$, la suma de las variables correspondientes a los jugadores requeridos en $B_i$ debe ser mayor o igual a 1:
+
+\begin{equation}
+    \sum_{j \in B_i} x_j \geq 1 \quad \forall i \in \{1, 2, \dots, m\}
+\end{equation}
+
+Además, se debe declarar la naturaleza del dominio de las variables de decisión:
+
+\begin{equation}
+    x_j \in \{0, 1\} \quad \forall j \in A
+\end{equation}
+
+\subsection*{Análisis de complejidad del modelo lineal}
+
+La implementación de este modelo se encuentra en el archivo \texttt{hitting\_set\_lineal.py}, utilizando la biblioteca \texttt{PuLP} de Python. Es importante aclarar que plantear el problema con programación lineal entera (ILP) no cambia su dificultad matemática de fondo: como ya se demostró, el problema sigue siendo NP-completo.
+
+Para resolver este modelo, las herramientas modernas (como el motor que usa PuLP por defecto) no prueban todas las combinaciones posibles a ciegas. Utilizan una mezcla del algoritmo \textit{simplex} y una técnica de búsqueda con ramificación y poda (\textit{branch-and-bound}). La complejidad temporal en el peor de los casos se entiende analizando estos dos pasos:
+
+\begin{enumerate}
+    \item \textbf{\textit{simplex}:} El algoritmo \textit{simplex} resuelve una versión relajada de forma muy rápida, aunque su peor caso teórico siga siendo exponencial.
+    
+    \item \textbf{\textit{branch-and-bound}:} En el peor escenario absoluto, donde las cuentas matemáticas previas no logran ayudar a descartar malas opciones, el algoritmo terminaría explorando todas las combinaciones posibles. Para $n$ jugadores en la lista, esto nos da una complejidad asintótica de $O(2^n)$.
+\end{enumerate}
+
+En resumen, la resolución con este modelo lineal tiene un límite teórico de $O(2^n)$ en su peor caso, exactamente igual que un algoritmo de \textit{backtracking} puro. Sin embargo, su enorme superioridad aparece en la \textbf{práctica}. 
+
+Mientras que el \textit{backtracking} tradicional depende de reglas de poda heurísticas que nosotros programamos a mano, el modelo matemático aprovecha \textit{simplex} para calcular límites numéricos muy estrictos. Estas herramientas matemáticas logran descartar porciones masivas del árbol de combinaciones casi al instante, permitiéndonos resolver listas con cientos de jugadores y presiones de la prensa en apenas fracciones de segundo.
+
+\subsection*{Conclusión del modelo}
+Este conjunto de ecuaciones traduce el requerimiento de encontrar el subconjunto $C \subseteq A$ de tamaño mínimo a un formato estándar de optimización matemática. Al proveer este modelo a un \textit{solver} matemático, este puede encontrar el tamaño $k$ mínimo exacto sin la necesidad de explorar ineficientemente todo el árbol de combinaciones, delegando la poda a las relajaciones continuas del algoritmo \textit{simplex}.
+
+

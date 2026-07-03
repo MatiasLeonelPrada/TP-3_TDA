@@ -14,11 +14,14 @@ def generar_caso_aleatorio(num_jugadores, num_medios, max_jugadores_por_medio):
 print(f"{'Jugadores (n)':<15}{'Medios (m)':<15}{'Tiempo (segundos)':<20}{'Tamaño Óptimo'}")
 print("-" * 65)
 
-for n, m in [(10, 5), (15, 10), (20, 15), (25, 20), (30, 25)]:
-    A, B = generar_caso_aleatorio(n, m, max_jugadores_por_medio=3)
-    
-    start_time = time.time()
-    res = hitting_set_backtracking(A, B)
-    end_time = time.time()
-    
-    print(f"{n:<15}{m:<15}{end_time - start_time:<20.6f}{len(res)}")
+with open("mediciones.txt", "w") as f:
+    for n, m in [(10, 5), (12, 6), (14, 7), (16, 8), (18, 9), (20, 10), (22, 11), (24, 12), (26, 13), (28, 14), (30, 15)]:
+        A, B = generar_caso_aleatorio(n, m, max_jugadores_por_medio=4)
+        
+        start_time = time.time()
+        res = hitting_set_backtracking(A, B)
+        end_time = time.time()
+        tiempo = end_time - start_time
+        
+        print(f"{n:<15}{m:<15}{tiempo:<20.6f}{len(res)}")
+        f.write(f"{n},{tiempo}\n")
