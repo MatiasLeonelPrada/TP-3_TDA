@@ -83,3 +83,38 @@ prensa_deseos = [
 \end{lstlisting}
 
 Al ejecutar nuestro algoritmo, el resultado obtenido es la lista \texttt{['Messi', 'Mateo Messi']}, cuyo tamaño es de 2 jugadores. Esto verifica empíricamente el funcionamiento del Backtracking: con solo citar a esos dos jugadores, Scaloni se asegura de que el Medio 1 y el Medio 4 estén contentos (por Messi), y que el Medio 2 y Medio 3 también lo estén (por Mateo Messi), logrando el subconjunto mínimo óptimo.
+
+\subsection{Demostracion de tiempos}
+
+Sabemos que el algoritmo tiene dos variables que se van a modificar, la cantidad de jugardores (N) y la cantidad de set para poder completar la lista de jugadores (M). Ademas, el algoritmo de backtracking reocrre el arbol de soluciones que vamos a ir generando. En el peor de los casos (sin cortes), vamos a estar generando un arbol con todas las posibilidades de soluciones. Sabemos que el tiempo va a ser $O(2^N)$ (si mantenemos fija la cantidad de set indepenedientes) y $O(2^M)$ (si mantenemos fija la cantidad de jugadores).
+
+Para demostrar esto, generamos datos al traves del archivo "datos.py" y luego usamos estos datos para correr ambos casos ($O(2^N)$ y $O(2^M)$). Luego con estos resultados medidos hicimos un analisis de cuadrados minimo para chequear el valor de estas funciones (se uso el archivo "graficos.py"), moviendo la cantida de jugadores observemos que el error para un tiempo del comportamiento $O(2^N)$ es mucho menor que a una complejidad de $O(N²)$, por lo que el tiempo, se puede aproximar a $O(2^N)$.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/tiempos_vary_n.png}
+    \caption{Tiempo del algoritmo variando la cantidad de jugadores}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/error_vary_n.png}
+    \caption{Tiempo del algoritmo variando la cantidad de jugadores}
+\end{figure}
+
+
+Siguiendo el analisis pero ahora moviendo la cantidad de set en lugar de los jugadores obserbamos algo parecido, en que el error de una complejidad $O(2^M)$ es menor a una complejidad $O(M²)$ llegando a una conclusion de lo que hablamos antes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/tiempos_vary_m.png}
+    \caption{Tiempo del algoritmo variando la cantidad de set}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/error_vary_m.png}
+    \caption{Error del algoritmo variando la cantidad de set}
+\end{figure}
+
