@@ -84,37 +84,51 @@ prensa_deseos = [
 
 Al ejecutar nuestro algoritmo, el resultado obtenido es la lista \texttt{['Messi', 'Mateo Messi']}, cuyo tamaño es de 2 jugadores. Esto verifica empíricamente el funcionamiento del Backtracking: con solo citar a esos dos jugadores, Scaloni se asegura de que el Medio 1 y el Medio 4 estén contentos (por Messi), y que el Medio 2 y Medio 3 también lo estén (por Mateo Messi), logrando el subconjunto mínimo óptimo.
 
-\subsection{Demostracion de tiempos}
+\subsection{Demostración empírica de tiempos y complejidad}
 
-Sabemos que el algoritmo tiene dos variables que se van a modificar, la cantidad de jugardores (N) y la cantidad de set para poder completar la lista de jugadores (M). Ademas, el algoritmo de backtracking reocrre el arbol de soluciones que vamos a ir generando. En el peor de los casos (sin cortes), vamos a estar generando un arbol con todas las posibilidades de soluciones. Sabemos que el tiempo va a ser $O(2^N)$ (si mantenemos fija la cantidad de set indepenedientes) y $O(2^M)$ (si mantenemos fija la cantidad de jugadores).
+El algoritmo de resolución exacta diseñado mediante \textit{backtracking} se encuentra condicionado por dos variables principales: la cantidad de jugadores ($N$), que define el tamaño del universo, y la cantidad de conjuntos o medios a cubrir ($M$). Teóricamente, el algoritmo explora un árbol de decisión binario donde cada nodo representa la inclusión o exclusión de un jugador, lo que genera un espacio de estados en el peor de los casos de $O(2^N)$. Por otro lado, para cada configuración candidata, el algoritmo debe verificar de manera lineal la cobertura de las $M$ restricciones. En consecuencia, la complejidad teórica global responde al orden $O(M \cdot 2^N)$.
 
-Para demostrar esto, generamos datos al traves del archivo "datos.py" y luego usamos estos datos para correr ambos casos ($O(2^N)$ y $O(2^M)$). Luego con estos resultados medidos hicimos un analisis de cuadrados minimo para chequear el valor de estas funciones (se uso el archivo "graficos.py"), moviendo la cantida de jugadores observemos que el error para un tiempo del comportamiento $O(2^N)$ es mucho menor que a una complejidad de $O(N²)$, por lo que el tiempo, se puede aproximar a $O(2^N)$.
+Para validar empíricamente este comportamiento, se generaron instancias sintéticas mediante el script \texttt{datos.py} y se registraron los tiempos de ejecución ejecutando \texttt{graficos.py}. A partir de los datos recolectados, se aplicó el método de mínimos cuadrados para evaluar y contrastar las hipótesis de complejidad.
 
+\newpage
+\subsubsection{Análisis variando la cantidad de jugadores ($N$)}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\textwidth]{img/tiempos_vary_n.png}
-    \caption{Tiempo del algoritmo variando la cantidad de jugadores}
-\end{figure}
+En primera instancia, se mantuvo fija la cantidad de conjuntos ($M=15$) y se barrió de forma creciente la cantidad de jugadores $N$. Como se observa en la Figura~\ref{fig:tiempos_n}, al contrastar el ajuste exponencial $O(2^N)$ contra un modelo polinomial alternativo $O(N^2)$, la curva exponencial acompaña con precisión el disparo vertical del tiempo de ejecución provocado por la explosión combinatoria.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{img/error_vary_n.png}
-    \caption{Tiempo del algoritmo variando la cantidad de jugadores}
+    \includegraphics[width=0.85\textwidth]{img/tiempos_vary_n.png}
+    \caption{Tiempo de ejecución en función de la cantidad de jugadores ($N$).}
+    \label{fig:tiempos_n}
 \end{figure}
 
-
-Siguiendo el analisis pero ahora moviendo la cantidad de set en lugar de los jugadores obserbamos algo parecido, en que el error de una complejidad $O(2^M)$ es menor a una complejidad $O(M²)$ llegando a una conclusion de lo que hablamos antes.
+Esta observación se convalida formalmente en la Figura~\ref{fig:error_n}, donde el gráfico de residuos muestra que el error absoluto del ajuste exponencial se mantiene drásticamente por debajo del error del modelo cuadrático, el cual es incapaz de modelar la aceleración asintótica del algoritmo.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{img/tiempos_vary_m.png}
-    \caption{Tiempo del algoritmo variando la cantidad de set}
+    \includegraphics[width=0.85\textwidth]{img/error_vary_n.png}
+    \caption{Error absoluto del ajuste para las hipótesis $O(2^N)$ y $O(N^2)$.}
+    \label{fig:error_n}
 \end{figure}
+
+\subsubsection{Análisis variando la cantidad de conjuntos ($M$)}
+
+Para estudiar el impacto de la cantidad de restricciones, se procedió a fijar la cantidad de jugadores en un valor constante ($N=25$) variando el parámetro $M$. Dado que el tamaño del árbol de backtracking permanece fijo, el tiempo de procesamiento pasa a depender exclusivamente de las verificaciones de cobertura sobre los conjuntos.
+
+Al contrario de la experiencia anterior, el comportamiento esperado aquí es estrictamente \textbf{lineal}, es decir, $O(M)$. En la Figura~\ref{fig:tiempos_m} se evidencia que la nube de puntos describe una trayectoria rectilínea. Al contrastar el ajuste lineal $O(M)$ contra una hipótesis cuadrática $O(M^2)$, se aprecia que la recta se superpone perfectamente sobre los datos experimentales.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{img/error_vary_m.png}
-    \caption{Error del algoritmo variando la cantidad de set}
+    \includegraphics[width=0.85\textwidth]{img/tiempos_vary_m.png}
+    \caption{Tiempo de ejecución en función de la cantidad de conjuntos ($M$).}
+    \label{fig:tiempos_m}
 \end{figure}
 
+El análisis de residuos presentado en la Figura~\ref{fig:error_m} confirma esta conclusión: mientras que el error del modelo lineal fluctúa de forma acotada y muy cercana a cero, el error del modelo cuadrático se incrementa sistemáticamente en los extremos del dominio debido a que la parábola penaliza el ajuste intentando forzar una curvatura inexistente en la realidad empírica del programa.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/error_vary_m.png}
+    \caption{Error absoluto del ajuste para las hipótesis $O(M)$ y $O(M^2)$.}
+    \label{fig:error_m}
+\end{figure}
