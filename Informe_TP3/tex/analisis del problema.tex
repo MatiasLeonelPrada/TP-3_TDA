@@ -1,0 +1,26 @@
+\section{Análisis del Problema}
+
+El presente trabajo plantea el desafío de seleccionar un conjunto de jugadores para disputar un partido amistoso con el objetivo estratégico de apaciguar las presiones de la prensa. Para lograrlo, el equipo técnico debe asegurarse de contentar a diferentes medios periodísticos, seleccionando al menos un jugador del agrado de cada uno de ellos, pero comprometiendo la menor cantidad de cupos posibles en el equipo.
+
+Formalizando el escenario, podemos definir los elementos del problema de la siguiente manera:
+\begin{itemize}
+    \item Un conjunto universal $A$ conformado por los $n$ jugadores convocados (en este caso, los 43 jugadores de la lista).
+    \item Una serie de $m$ subconjuntos $B_1, B_2, \dots, B_m$, donde cada $B_i \subseteq A$ representa el subconjunto de jugadores que exige ver en cancha el $i$-ésimo medio de prensa.
+\end{itemize}
+
+El objetivo original del problema consiste en encontrar un conjunto $C \subseteq A$ de tamaño mínimo tal que logre intersectar a todos los subconjuntos de preferencias periodísticas. Es decir, se debe garantizar la siguiente condición:
+
+\begin{eqnarray}
+C \cap B_i \neq \emptyset \quad \forall i \in \{1, 2, \dots, m\}
+\label{hitting-set-condition}
+\end{eqnarray}
+
+Este escenario modela un problema clásico de la teoría de la complejidad computacional y optimización combinatoria conocido como el \textbf{Hitting-Set Problem}.
+
+Sin embargo, para los fines de las demostraciones teóricas iniciales de este trabajo práctico (demostración de pertenencia a NP y prueba de NP-Completitud), es necesario abstraerse de la minimización del conjunto. Por lo tanto, abordaremos y utilizaremos estrictamente la \textbf{versión de decisión} del Hitting-Set Problem. 
+
+En esta versión, se introduce una cota superior $k$ (que en nuestro dominio representa la cantidad máxima de jugadores que el técnico está dispuesto a "gastar" para contentar a la prensa) y el problema se reduce a responder afirmativa o negativamente a la siguiente pregunta:
+
+\textit{Dado el conjunto $A$ de $n$ elementos, los $m$ subconjuntos $B_1, B_2, \dots, B_m$ de $A$, y un número entero $k$, ¿existe un subconjunto $C \subseteq A$ con $|C| \leq k$ tal que $C$ tenga al menos un elemento de cada $B_i$?}
+
+\newpage
